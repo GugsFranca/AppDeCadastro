@@ -83,6 +83,7 @@ public class ListaDepartamentoController implements Initializable {
 
             FormularioDepartamentoController controller = loader.getController();
             controller.setDepartment(obj);
+            controller.setDerpartmenteService(new DepartamentoService());
             controller.updateFormData();
 
             Stage dialogStage = new Stage();
