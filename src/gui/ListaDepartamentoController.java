@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 
 public class ListaDepartamentoController implements Initializable {
 
+
     private DepartamentoService service;
 
     @FXML
@@ -43,12 +44,13 @@ public class ListaDepartamentoController implements Initializable {
     private ObservableList<Department> obsList;
 
     @FXML
-    public void onBtNewAction(ActionEvent event){
+    public void onBtNewAction(ActionEvent event) {
         Stage parentStage = Utils.currentStage(event);
-        createDiologForm("/gui/FormularioDepartamento.fxml", parentStage);
+        Department obj = new Department();
+        createDiologForm(obj, "/gui/FormularioDepartamento.fxml", parentStage);
     }
 
-    public void setDepartamentService(DepartamentoService service){
+    public void setDepartamentService(DepartamentoService service) {
         this.service = service;
     }
 
@@ -64,18 +66,24 @@ public class ListaDepartamentoController implements Initializable {
         Stage stage = (Stage) Main.getMainScene().getWindow();
         tableViewDepartamento.prefHeightProperty().bind(stage.heightProperty());
     }
-    public void updateTableView(){
-        if(service == null){
+
+    public void updateTableView() {
+        if (service == null) {
             throw new IllegalStateException("Service tava nulo");
         }
         List<Department> list = service.findAll();
         obsList = FXCollections.observableArrayList(list);
         tableViewDepartamento.setItems(obsList);
     }
-    private void createDiologForm(String absoluteName ,Stage parentStage){
-        try{
+
+    private void createDiologForm( Department obj,String absoluteName, Stage parentStage) {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
             Pane pane = loader.load();
+
+            FormularioDepartamentoController controller = loader.getController();
+            controller.setDepartment(obj);
+            controller.updateFormData();
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Novo departamento");
@@ -85,7 +93,7 @@ public class ListaDepartamentoController implements Initializable {
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.showAndWait();
 
-        }catch (IOException e){
+        } catch (IOException e) {
             Alerts.showAlert("IO Exception", "Erro ao mostrar a janela", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
