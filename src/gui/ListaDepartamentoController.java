@@ -10,7 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import model.entities.Departamento;
+import model.entities.Department;
 import model.services.DepartamentoService;
 
 import java.net.URL;
@@ -22,16 +22,16 @@ public class ListaDepartamentoController implements Initializable {
     private DepartamentoService service;
 
     @FXML
-    private TableView<Departamento> tableViewDepartamento;
+    private TableView<Department> tableViewDepartamento;
 
     @FXML
-    private TableColumn<Departamento, Integer> tableColumID;
+    private TableColumn<Department, Integer> tableColumID;
     @FXML
-    private TableColumn<Departamento, String> tableColumnNome;
+    private TableColumn<Department, String> tableColumnNome;
     @FXML
     private Button btNew;
 
-    private ObservableList<Departamento> obsList;
+    private ObservableList<Department> obsList;
 
     @FXML
     public void onBtNewAction(){
@@ -58,7 +58,7 @@ public class ListaDepartamentoController implements Initializable {
         if(service == null){
             throw new IllegalStateException("Service tava nulo");
         }
-        List<Departamento> list = service.findAll();
+        List<Department> list = service.findAll();
         obsList = FXCollections.observableArrayList(list);
         tableViewDepartamento.setItems(obsList);
     }

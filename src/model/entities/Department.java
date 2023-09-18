@@ -3,15 +3,15 @@ package model.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Departamento implements Serializable {
+public class Department implements Serializable {
     private Integer id;
     private String nome;
 
-    public Departamento() {
+    public Department() {
 
     }
 
-    public Departamento(Integer id, String nome) {
+    public Department(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
     }
@@ -35,7 +35,7 @@ public class Departamento implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Departamento that)) return false;
+        if (!(o instanceof Department that)) return false;
 
         if (!Objects.equals(id, that.id)) return false;
         return Objects.equals(nome, that.nome);
