@@ -1,6 +1,7 @@
 package gui;
 
 import application.Main;
+import gui.gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ListaDepartamentoController implements Initializable {
+public class ListaDepartamentoController implements Initializable, DataChangeListener {
 
 
     private DepartamentoService service;
@@ -84,6 +85,7 @@ public class ListaDepartamentoController implements Initializable {
             FormularioDepartamentoController controller = loader.getController();
             controller.setDepartment(obj);
             controller.setDerpartmenteService(new DepartamentoService());
+            controller.subscribeDataChangeListener(this);
             controller.updateFormData();
 
             Stage dialogStage = new Stage();
@@ -97,5 +99,9 @@ public class ListaDepartamentoController implements Initializable {
         } catch (IOException e) {
             Alerts.showAlert("IO Exception", "Erro ao mostrar a janela", e.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+    @Override
+    public void onDataChange() {
+        updateTableView();
     }
 }

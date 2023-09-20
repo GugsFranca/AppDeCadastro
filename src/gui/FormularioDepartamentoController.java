@@ -1,6 +1,7 @@
 package gui;
 
 import db.DbException;
+import gui.gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -15,6 +16,8 @@ import model.entities.Department;
 import model.services.DepartamentoService;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class FormularioDepartamentoController implements Initializable {
@@ -22,6 +25,8 @@ public class FormularioDepartamentoController implements Initializable {
     private Department entity;
 
     private DepartamentoService service;
+
+    private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
     @FXML
     private TextField txtId;
@@ -41,6 +46,23 @@ public class FormularioDepartamentoController implements Initializable {
 
         return obj;
     }
+    public void setDepartment(Department entity) {
+        this.entity = entity;
+    }
+
+    public void setDerpartmenteService(DepartamentoService service) {
+        this.service = service;
+    }
+
+    public void subscribeDataChangeListener(DataChangeListener listener){
+        dataChangeListeners.add(listener);
+    }
+
+    private void notifyDatachangeListeners() {
+        for(DataChangeListener listener : dataChangeListeners){
+            listener.onDataChange();
+        }
+    }
 
     @FXML
     public void onBtSaveAction(ActionEvent event) {
@@ -53,6 +75,7 @@ public class FormularioDepartamentoController implements Initializable {
         try {
             entity = getFormData();
             service.saveOrUpdate(entity);
+            notifyDatachangeListeners();
             Utils.currentStage(event).close();
         } catch (DbException e) {
             Alerts.showAlert("Erro ao salvar objeto", null, e.getMessage(), Alert.AlertType.ERROR);
@@ -67,14 +90,6 @@ public class FormularioDepartamentoController implements Initializable {
     private void initializeNodes() {
         Constraints.setTextFieldInteger(txtId);
         Constraints.setTextFieldMaxLength(txtNome, 30);
-    }
-
-    public void setDepartment(Department entity) {
-        this.entity = entity;
-    }
-
-    public void setDerpartmenteService(DepartamentoService service) {
-        this.service = service;
     }
 
     @Override
