@@ -4,6 +4,7 @@ import application.Main;
 import gui.gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,10 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -40,6 +38,8 @@ public class ListaDepartamentoController implements Initializable, DataChangeLis
     @FXML
     private TableColumn<Department, String> tableColumnNome;
     @FXML
+    TableColumn<Department, Department> tableColumnEDIT;
+    @FXML
     private Button btNew;
 
     private ObservableList<Department> obsList;
@@ -48,7 +48,7 @@ public class ListaDepartamentoController implements Initializable, DataChangeLis
     public void onBtNewAction(ActionEvent event) {
         Stage parentStage = Utils.currentStage(event);
         Department obj = new Department();
-        createDiologForm(obj, "/gui/FormularioDepartamento.fxml", parentStage);
+        createDialogForm(obj, "/gui/FormularioDepartamento.fxml", parentStage);
     }
 
     public void setDepartamentService(DepartamentoService service) {
@@ -75,9 +75,10 @@ public class ListaDepartamentoController implements Initializable, DataChangeLis
         List<Department> list = service.findAll();
         obsList = FXCollections.observableArrayList(list);
         tableViewDepartamento.setItems(obsList);
+        initEditButtons();
     }
 
-    private void createDiologForm( Department obj,String absoluteName, Stage parentStage) {
+    private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
             Pane pane = loader.load();
@@ -100,8 +101,29 @@ public class ListaDepartamentoController implements Initializable, DataChangeLis
             Alerts.showAlert("IO Exception", "Erro ao mostrar a janela", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
     @Override
     public void onDataChange() {
         updateTableView();
+    }
+
+    private void initEditButtons() {
+        tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+        tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {
+            private final Button button = new Button("edit");
+
+            @Override
+            protected void updateItem(Department obj, boolean empty) {
+                super.updateItem(obj, empty);
+                if (obj == null) {
+                    setGraphic(null);
+                    return;
+                }
+                setGraphic(button);
+                button.setOnAction(
+                        event -> createDialogForm(
+                                obj, "/gui/FormularioDepartamento.fxml", Utils.currentStage(event)));
+            }
+        });
     }
 }

@@ -25,7 +25,7 @@ public class FormularioDepartamentoController implements Initializable {
 
     private DepartamentoService service;
 
-    private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
+    private final List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
     @FXML
     private TextField txtId;
