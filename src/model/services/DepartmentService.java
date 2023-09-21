@@ -6,7 +6,7 @@ import model.entities.Department;
 
 import java.util.List;
 
-public class DepartamentoService {
+public class DepartmentService {
     private DepartmentDao dao = DaoFactory.createDepartmentDao();
 
     public List<Department> findAll() {

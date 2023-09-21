@@ -14,16 +14,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
 import model.exceptions.ValidationException;
-import model.services.DepartamentoService;
+import model.services.DepartmentService;
 
 import java.net.URL;
 import java.util.*;
 
-public class FormularioDepartamentoController implements Initializable {
+public class DepartmentFormController implements Initializable {
 
     private Department entity;
 
-    private DepartamentoService service;
+    private DepartmentService service;
 
     private final List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class FormularioDepartamentoController implements Initializable {
         this.entity = entity;
     }
 
-    public void setDerpartmenteService(DepartamentoService service) {
+    public void setDepartmenteService(DepartmentService service) {
         this.service = service;
     }
 
