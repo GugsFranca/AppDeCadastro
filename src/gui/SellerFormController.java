@@ -8,15 +8,14 @@ import gui.util.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import model.entities.Seller;
 import model.exceptions.ValidationException;
 import model.services.SellerService;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 public class SellerFormController implements Initializable {
@@ -32,7 +31,20 @@ public class SellerFormController implements Initializable {
     @FXML
     private TextField txtNome;
     @FXML
+    private TextField txtEmail;
+    @FXML
+    private DatePicker dpAniversario;
+    @FXML
+    private TextField txtSalario;
+    @FXML
     private Label labelErrorName;
+    @FXML
+    private Label labelErrorEmail;
+    @FXML
+    private Label labelErrorAniversario;
+    @FXML
+    private Label labelErrorSalario;
+
     @FXML
     private Button btSalvar;
     @FXML
@@ -99,7 +111,10 @@ public class SellerFormController implements Initializable {
 
     private void initializeNodes() {
         Constraints.setTextFieldInteger(txtId);
-        Constraints.setTextFieldMaxLength(txtNome, 30);
+        Constraints.setTextFieldMaxLength(txtNome, 70);
+        Constraints.setTextFieldDouble(txtSalario);
+        Constraints.setTextFieldMaxLength(txtEmail, 60);
+        Utils.formatDatePicker(dpAniversario, "dd/MM/yyyy");
     }
 
     @Override
@@ -113,6 +128,13 @@ public class SellerFormController implements Initializable {
         }
         txtId.setText(String.valueOf(entity.getId()));
         txtNome.setText(entity.getName());
+        txtEmail.setText(entity.getEmail());
+        Locale.setDefault(Locale.US);
+        txtSalario.setText(String.format("%.2f", entity.getBaseSalary()));
+        if(entity.getBirthDate() != null){
+            dpAniversario.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
+        }
+
     }
 
     private void setErrorMessages(Map<String, String> error) {
