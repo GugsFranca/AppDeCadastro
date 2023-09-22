@@ -18,6 +18,7 @@ import model.entities.Seller;
 import model.services.SellerService;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -34,6 +35,12 @@ public class SellerListController implements Initializable, DataChangeListener {
     private TableColumn<Seller, Integer> tableColumID;
     @FXML
     private TableColumn<Seller, String> tableColumnNome;
+    @FXML
+    private TableColumn<Seller, Date> tableColumAniversario;
+    @FXML
+    private TableColumn<Seller, String> tableColumnEmail;
+    @FXML
+    private TableColumn<Seller, Double> tableColumnSalarioBase;
     @FXML
     TableColumn<Seller, Seller> tableColumnEDIT;
     @FXML
@@ -63,6 +70,14 @@ public class SellerListController implements Initializable, DataChangeListener {
     private void initializeNodes() {
         tableColumID.setCellValueFactory(new PropertyValueFactory<>("id"));
         tableColumnNome.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        tableColumAniversario.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
+        Utils.formatTableColumnDate(tableColumAniversario, "dd/MM/yyyy");
+        tableColumnSalarioBase.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
+        Utils.formatTableColumnDouble(tableColumnSalarioBase, 2);
+
+
+
         Stage stage = (Stage) Main.getMainScene().getWindow();
         tableViewSeller.prefHeightProperty().bind(stage.heightProperty());
     }
