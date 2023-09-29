@@ -19,6 +19,7 @@ import model.services.DepartmentService;
 import model.services.SellerService;
 
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -59,17 +60,39 @@ public class SellerFormController implements Initializable {
     @FXML
     private Button btCancelar;
 
-    private ObservableList<Department>obsList;
+    private ObservableList<Department> obsList;
 
     private Seller getFormData() {//pega os dados do formulario
         Seller obj = new Seller();
         ValidationException exception = new ValidationException("Erro de Validação");
+
         obj.setId(Utils.tryParseToInt(txtId.getText()));
 
         if (txtNome.getText() == null || txtNome.getText().trim().isEmpty()) {
             exception.addError("nome", "O campo nome não pode ser vazio ");
         }
         obj.setName(txtNome.getText());
+
+        if (txtEmail.getText() == null || txtEmail.getText().trim().isEmpty()) {
+            exception.addError("email", "O campo email não pode ser vazio ");
+        }
+        obj.setEmail(txtEmail.getText());
+
+        if(dpAniversario.getValue() == null){
+            exception.addError("aniversario", "O campo aniversario não pode ser vazio ");
+        }else {
+            Instant instant = Instant.from(dpAniversario.getValue().atStartOfDay(ZoneId.systemDefault()));
+            obj.setBirthDate(Date.from(instant));
+        }
+
+        if (txtSalario.getText() == null || txtSalario.getText().trim().isEmpty()) {
+            exception.addError("salario", "O campo salario não pode ser vazio ");
+        }
+        obj.setBaseSalary(Utils.tryParseToDouble(txtSalario.getText()));
+
+        obj.setDepartment(cbDepartment.getValue());
+
+
         if (exception.getErrors().size() > 0) {
             throw exception;
         }
@@ -145,16 +168,17 @@ public class SellerFormController implements Initializable {
         txtEmail.setText(entity.getEmail());
         Locale.setDefault(Locale.US);
         txtSalario.setText(String.format("%.2f", entity.getBaseSalary()));
-        if(entity.getBirthDate() != null){
+        if (entity.getBirthDate() != null) {
             dpAniversario.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
         }
-        if(entity.getDepartment() == null){
+        if (entity.getDepartment() == null) {
             cbDepartment.getSelectionModel().selectFirst();
-        }else{
+        } else {
             cbDepartment.setValue(entity.getDepartment());
         }
     }
-    public void CarregarObjetosAssociados(){
+
+    public void CarregarObjetosAssociados() {
         List<Department> list = dpService.findAll();
         obsList = FXCollections.observableArrayList(list);
         cbDepartment.setItems(obsList);
@@ -174,8 +198,11 @@ public class SellerFormController implements Initializable {
 
     private void setErrorMessages(Map<String, String> error) {
         Set<String> fields = error.keySet();
-        if (fields.contains("nome")) {
-            labelErrorName.setText(error.get("nome"));
-        }
+
+        labelErrorName.setText(fields.contains("nome") ?  error.get("nome") : "");
+        labelErrorEmail.setText(fields.contains("email") ?  error.get("email") : "");
+        labelErrorSalario.setText(fields.contains("salario") ?  error.get("salario") : "");
+        labelErrorAniversario.setText(fields.contains("aniversario") ?  error.get("aniversario") : "");
+
     }
 }
